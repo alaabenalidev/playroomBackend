@@ -20,8 +20,8 @@ const livres = require('./routes/livres')
 const groups = require('./routes/group');
 const challenges = require('./routes/challenges');
 const usersAdmin = require('./routes/userA');
-const Posts = require('./routes/posts');
-const Notification = require('./routes/notification');
+
+
 
 
 MongoClient.connect(config.database, (err, Database) => {
@@ -72,8 +72,6 @@ app.use('/groups', groups);
 app.use('/parents', parents);
 app.use('/childs', childs);
 app.use('/usersadmin', usersAdmin);
-app.use('/posts',Posts);
-app.use('/notifications',Notification)
 
 // Start Server
 /*app.listen(port, () => {

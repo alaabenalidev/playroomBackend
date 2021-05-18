@@ -10,8 +10,7 @@ router.post('/add',(req,res) => {
         title:  req.body.title,
         description: req.body.description,
         auteur: req.body.auteur,
-        language: req.body.language,  
-        avis: req.body.avis,
+        language: req.body.language,
         file_pdf: req.body.file_pdf,
         video: req.body.video,
         quizs: req.body.quizs,
@@ -27,19 +26,43 @@ router.post('/add',(req,res) => {
 }
 );
 
-router.get('/get/livre', function(req, res) {
-    Livre.find({}, function(err, livres) {
+router.get('/', function(req, res) {
+    var livreProjection = { 
+        __v: false,
+        file_pdf:false,
+
+    };
+    Livre.find({},livreProjection, function(err, livres) {
       res.send(livres);  
     });
 });
 
+router.get('/search/:input', function(req, res) {
+    Livre.find({ "title" : { $regex: req.params.input, $options: 'i' } },
+          function (err, livres) {
+            (err)? res.send({success:false ,livres:livres}) : (livres.length==0)?res.send({success:false ,livres:[]}):res.send({success:true ,livres:livres})
+   });
+});
+
 router.get('/getlivrebyuserid/:id', function(req, res) {
-    console.log(req.params.id)
     let id = req.params.id
     Livre.find({child_id:id}, function(err, livre) {
         (err)? res.send({success:false ,livre:[]}) : res.send({success:true ,livre:livre})
     });
 });
+
+router.get("/getlivrebyid/:id", function (req, res) {
+    let id = req.params.id;
+    Livre.findOneAndUpdate({ _id: id }, { $inc: { views: 1 } }, {new: true },).populate('child_id').exec((err, result) => {
+        res.send({success:true, book:result})
+    });
+    
+    // Livre.find({ _id: id }, function (err, challenge) {
+    //   err
+    //     ? res.send({ success: false, challenge: challenge })
+    //     : res.send({ success: true, challenge: challenge });
+    // });
+  });
 
 router.post('/getlivreuser', function(req, res) {
     Livre.find(

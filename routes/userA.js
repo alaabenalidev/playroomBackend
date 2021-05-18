@@ -8,7 +8,6 @@ const nodemailer = require('nodemailer')
 const User = require('../models/user');
 const Parent = require('../models/parent');
 const Student = require('../models/student');
-const Teacher = require('../models/teacher');
 const config = require('../config/database');
 //const multer = require('multer');
 const path = require("path");

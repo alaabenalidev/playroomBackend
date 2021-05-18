@@ -11,19 +11,8 @@ var livreSchema = mongoose.Schema(
     description: { type: String, require: true },
     auteur: { type: String, require: true },
     language: { type: String, require: true },
-    avis: [
-      {
-        _id_user: {
-          type: mongoose.Schema.Types.ObjectId,
-          require: true,
-          unique: true,
-          ref: "Users",
-        },
-        date_commit: { type: Date, default: Date.now() },
-        rate: { type: Number, require: true },
-      },
-    ],
-    file_pdf: { type: String, require: true },
+    views:{ type: Number, default: 0},
+    file_pdf: { type: String,binData: Buffer, require: true },
     video: String,
     quizs: [
       {
