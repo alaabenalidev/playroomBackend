@@ -36,7 +36,6 @@ router.get('/getallusers', (req, res) => {
         if (err)
             console.log(err)
         else {
-            console.log(result)
             res.send(result)
         }
     })
@@ -108,7 +107,6 @@ router.get('/findbyemailorusernamechild/:value', (req, res) => {
                 success: false
             })
         } else {
-            console.log(result)
             if (!result)
                 res.send({
                     success: false

@@ -40,6 +40,12 @@ router.get("/", function (req, res) {
   });
 });
 
+router.get("/participated/:memberId", function (req, res) {
+  Challenge.find({"list_livre._id_user": req.params.memberId}, function (err, challenges) {
+    res.send({challenges:challenges});
+  });
+});
+
 router.get("/search/:input", function (req, res) {
   Challenge.find(
     { title: { $regex: req.params.input, $options: "i" } },
@@ -83,7 +89,6 @@ router.put("/update", function (req, res) {
       $set: {
         title: updateChallenge.notice_title,
         description: updateChallenge.description,
-        date_fin: updateChallenge.date_fin,
         date_fin: updateChallenge.date_fin,
         langue: updateChallenge.langue,
         points_cadeaux: updateChallenge.points_cadeaux,

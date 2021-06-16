@@ -23,7 +23,8 @@ var ParentSchema = mongoose.Schema({
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Users'
         },
-        typeChild: String
+        typeChild: String,
+        default:[]
     }]
 }, {
     timestamps: true

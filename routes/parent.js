@@ -7,7 +7,7 @@ var Parent = require('../models/parent');
 const User = require('../models/user');
 var randtoken = require('rand-token');
 const nodemailer = require('nodemailer')
-var Student = require('../models/student');
+var Child = require('../models/child');
 
 
 // create reusable transporter object using the default SMTP transport
@@ -26,13 +26,13 @@ let smtpTransport = nodemailer.createTransport({
 
 router.post('/addparent', (req, res) => {
 
-    let parent = new Parent({ id_parent: req.body.idUser,cin:req.body.cin,phoneNumber:req.body.phoneNumber })
+    let parent = new Parent({ id_parent: req.body.id_parent,cin:req.body.cin,phoneNumber:req.body.phoneNumber })
     Parent.addParent(parent, (err, user) => {
         if (err) {
             console.log(err);
             res.json({
                 success: false,
-                msg: 'Failed to add teacher'
+                msg: 'Failed to add Parent'
             });
         } else {
             res.json({
@@ -159,7 +159,7 @@ router.put('/addchild', (req, res) => {
                     }
                 }
             }, (err, result) => {
-                Student.findOne({ id_user: childId })
+                Child.findOne({ id_user: childId })
                 if (err) {
                     console.log(err);
                     res.send({
@@ -173,13 +173,13 @@ router.put('/addchild', (req, res) => {
                         success: false
                     })
                 } else {
-                    Student.findOneAndUpdate({ id_user: childId }, {
+                    Child.findOneAndUpdate({ id_user: childId }, {
                         $push: {
                             parents_list: {
                                 child: parent
                             }
                         }
-                    }, (err, updateStudent) => {
+                    }, (err, updateChild) => {
                         if (err) {
                             console.log(err);
                             res.send({
@@ -187,7 +187,7 @@ router.put('/addchild', (req, res) => {
                                 success: false
                             })
                         }
-                        if (!updateStudent) {
+                        if (!updateChild) {
                             res.send({
                                 msg: 'Error to update',
                                 success: false
@@ -242,12 +242,12 @@ router.put('/deletechild', (req, res) => {
                         success: false
                     })
                 } else {
-                    Student.findOneAndUpdate({ id_student: childId }, {
+                    Child.findOneAndUpdate({ id_Child: childId }, {
                         $pull: {
                             parents_list: { child: parent }
                         }
-                    }, (err, updateStudent) => {
-                        console.log(updateStudent)
+                    }, (err, updateChild) => {
+                        console.log(updateChild)
                         if (err) {
                             console.log(err);
                             res.send({
@@ -255,7 +255,7 @@ router.put('/deletechild', (req, res) => {
                                 success: false
                             })
                         }
-                        if (!updateStudent) {
+                        if (!updateChild) {
                             res.send({
                                 msg: 'Error to update',
                                 success: false
@@ -274,7 +274,7 @@ router.put('/deletechild', (req, res) => {
 
 
 router.get('/get/children', function(req, res) {
-    Student.find({}, function(err, notices) {
+    Child.find({}, function(err, notices) {
         res.send(notices);
     });
 });
@@ -284,7 +284,7 @@ router.get('/get/children', function(req, res) {
 
 router.delete('/delete/:idUser/child/:idChild', (req, res) => {
     Parent.findOne({
-        id_Student: req.params.idUser
+        id_Child: req.params.idUser
     }, function(err, me) {
         for (var i = 0; i <= me.children_list.length; i++) {
             if (String(me.children_list[i]) == String(req.params.idChild)) {

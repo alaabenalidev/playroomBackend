@@ -7,7 +7,7 @@ var secret = 'harrypotter';
 const nodemailer = require('nodemailer')
 const User = require('../models/user');
 const Parent = require('../models/parent');
-const Student = require('../models/student');
+const Child = require('../models/child');
 const config = require('../config/database');
 //const multer = require('multer');
 const path = require("path");
@@ -309,7 +309,7 @@ router.put('/addchild', (req, res) => {
                     }
                 }
             }, (err, result) => {
-                Student.findOne({ id_student: childId })
+                Child.findOne({ id_Child: childId })
                 if (err) {
                     console.log(err);
                     res.send({
@@ -323,14 +323,14 @@ router.put('/addchild', (req, res) => {
                         success: false
                     })
                 } else {
-                    Student.findOneAndUpdate({ id_student: childId }, {
+                    Child.findOneAndUpdate({ id_Child: childId }, {
                         $push: {
                             parents_list: {
                                 child: parent,
                                 typeChild: typeFamily
                             }
                         }
-                    }, (err, updateStudent) => {
+                    }, (err, updateChild) => {
                         if (err) {
                             console.log(err);
                             res.send({
@@ -338,7 +338,7 @@ router.put('/addchild', (req, res) => {
                                 success: false
                             })
                         }
-                        if (!updateStudent) {
+                        if (!updateChild) {
                             res.send({
                                 msg: 'Error to update',
                                 success: false
