@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const app = express();
 const router = express.Router();
 var Challenge = require("../models/challenge");
+const Child = require("../models/child")
 
 router.post("/add", (req, res) => {
   let date_fin = new Date(req.body.date_fin);
@@ -28,22 +29,52 @@ router.post("/addparticipant", function (req, res) {
   let challengeId = req.body.challengeId;
   let userId = req.body.idUser;
   let bookId = req.body.idBook;
-  Challenge.addParticipant({ userId, bookId,challengeId }, function (err, participe) {
-    if ((participe = false)) res.send({ success: false });
-    res.send({ success: true });
+  Challenge.addParticipant(
+    { userId, bookId, challengeId },
+    function (err, participe) {
+      if ((participe = false)) res.send({ success: false });
+      res.send({ success: true });
+    }
+  );
+});
+
+router.post("/setwinner", function (req, res) {
+  let userId = req.body.idUser;
+  let challengeId = req.body.challengeId;
+  Challenge.setWinner({ userId, challengeId }, function (err, winner) {
+    if ((participe = false)) {
+      res.send({ success: false });
+    } else {
+      Child.addPoints(
+        { id_user: req.body.idUser, point_fidelite: req.body.points_cadeaux },
+        (err, data) => {
+          if (err) {
+            console.log(err);
+            res.json({ success: false, msg: "Failed to add livre" });
+          } else res.json({ success: true, livre: livre });
+        }
+      );
+      res.send({ success: true });
+    }
   });
 });
 
 router.get("/", function (req, res) {
-  Challenge.find({}, function (err, challenges) {
-    res.send({challenges:challenges});
-  });
+  Challenge.find({})
+    .populate("list_livre._id_livre")
+    .populate("winner")
+    .exec(function (err, challenges) {
+      res.send({ challenges: challenges });
+    });
 });
 
 router.get("/participated/:memberId", function (req, res) {
-  Challenge.find({"list_livre._id_user": req.params.memberId}, function (err, challenges) {
-    res.send({challenges:challenges});
-  });
+  Challenge.find(
+    { "list_livre._id_user": req.params.memberId },
+    function (err, challenges) {
+      res.send({ challenges: challenges });
+    }
+  );
 });
 
 router.get("/search/:input", function (req, res) {

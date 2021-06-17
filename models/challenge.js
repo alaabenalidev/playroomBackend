@@ -25,7 +25,13 @@ var challengeSchema = mongoose.Schema(
         date_commit: { type: Date, default: Date.now() },
       },
     ],
-    winner: { type: String, require: true, default: "" },
+    winner: {
+      type: mongoose.Schema.Types.ObjectId,
+      require: true,
+      unique: true,
+      ref: "Users",
+      default: null,
+    },
   },
   { timestamps: true }
 );
@@ -83,4 +89,20 @@ module.exports.addParticipant = function (participe, callback) {
 
   // Find the document
   Challenge.findOneAndUpdate(query, update, options, callback);
+};
+
+module.exports.setWinner = function (winner, callback) {
+    // Find the document
+  Challenge.findByIdAndUpdate(
+    winner.challengeId,
+    { winner: winner.userId },
+    function (err, docs) {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log("Updated Challenge : ", docs);
+        callback(err,docs)
+      }
+    }
+  );
 };
